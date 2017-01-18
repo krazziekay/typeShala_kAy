@@ -1,0 +1,83 @@
+body {
+	width: 100%;
+}
+
+#main {
+	width: 800px;
+	height: 600px;
+	position: relative;
+	margin: 0 auto;
+	/*background-color: #FFFFFF;*/
+	overflow: hidden;
+}
+
+.top {
+	height: 60px;
+	background-color: #777777;
+	width: 100%;
+	color: #FFFFFF;
+	z-index: 2;
+	position: absolute;
+	padding: 10px;	
+}
+
+#main-wrapper {
+	width: 800px;
+	height: 550px;
+	position: relative;
+	background-image: url('../images/background.png');
+	background-size: contain;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.cloud {
+	border: 2px solid black;
+	border-radius: 50px;
+	background-color: #FFFFFF;
+	padding: 5px;
+	width: 50px;
+	height: 30px;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	z-index: 1;
+}
+.typing {
+	border: 1px solid grey;
+	padding: 10px;
+	margin: 0 auto;
+}
+.sign{
+	float: right;
+}
+#over {
+	position: absolute;
+	top: 50%;
+	left: 43%;
+	z-index: 3;
+}
+#warning-wrapper {
+	clear: both;
+	float: right;
+	padding: 5px 20px;
+}
+.button {
+	float: right;
+	width: 10%;
+	color: #FFFFFF;
+	background-color: #673AB7;
+	border: none;
+	padding: 7px;
+	margin-right: 20px;
+	border-radius: 5px;
+}
+.button:hover {
+	cursor: pointer;
+	border: 1px solid #FFFFFF;
+}
+
+.showscore {
+	width: 70%;
+	float: left;
+}

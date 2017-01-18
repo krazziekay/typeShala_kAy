@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Typeshala</title>
+	<link rel="stylesheet" href="css/reset.css" media="screen" />
+	<link rel="stylesheet" href="css/layout.css" media="screen" />
+	<link rel="stylesheet" href="css/style.css" media="screen" />
+</head>
+<body>
+	<div id="main">
+		<div class="top">
+			<div class="showscore">
+				Your score is :
+				<span id="score"></span>
+			</div>
+			<div id="over"></div>
+			<div class="restart">
+				<button class="button" onclick="restart()">Restart</button>
+				<div id="warning-wrapper">Lives : <span id="warning">5</span></div>
+			</div>
+		</div>
+		<div id="main-wrapper"></div>
+		<div class="typing">
+			Type here : <span id="type"></span>
+			<span class="sign">Press space bar to confirm or to reset</span>
+		</div>
+	</div>
+	<button onclick="clearInterval(animationStart)">Click</button>
+
+	
+	<script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
