@@ -2,6 +2,7 @@ var height = document.getElementById('main-wrapper').offsetHeight;
 var width = document.getElementById('main-wrapper').offsetWidth;
 var cloudArray = [];
 var cloudCount = 5;
+var bullet;
 var gameVelocity = 150;
 var movementCriteria = 50;
 var distanceCriteria = 50;
@@ -9,12 +10,16 @@ var score = 0;
 var flag = 0;
 var warningCounter = 5;
 var typedWord = "";
+var bulletHeight = 12;
+var bulletSpeed = 20;
+
 
 
 window.onload = function() {	
 	window.addEventListener('keydown', getKeys);
 	window.addEventListener('keypressed', getKeys);
 }
+
 
 function wordCloud() {
 	this.x = 0;
@@ -39,6 +44,24 @@ function wordCloud() {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function createBullet() {
+	this.init = function() {
+		this.x= document.getElementById('main-wrapper').offsetWidth/2;
+		this.y =  document.getElementById('main-wrapper').offsetHeight - bulletHeight;
+		this.element = document.createElement('div');
+		this.element.setAttribute('class', 'bullet');
+		this.element.style.top = this.y + 'px';
+		this.element.style.left = this.x + 'px';
+		document.getElementById('main-wrapper').appendChild(this.element);
+	}
+
+	this.redraw = function() {
+		this.element.style.top = this.y + 'px';
+		this.element.style.left = this.x + 'px';
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function createCloud() {
 	var cloud = new wordCloud();
 	cloud.x = getRandom(0, width - 70);
@@ -55,6 +78,9 @@ function gameStart() {
 		var newCloud = createCloud();
 		cloudArray.push(newCloud);
 	}
+
+	bullet = new createBullet();
+	bullet.init();
 
 	animationStart = setInterval(dropClouds, gameVelocity);
 }
@@ -105,7 +131,6 @@ function dropClouds() {
 		}
 
 		if(warningCounter == 0 ){
-			console.log("Game over");
 			document.getElementById('over').innerHTML = "GAME OVER!!";
 			clearInterval(animationStart);
 		}
@@ -137,7 +162,6 @@ function getKeys(e) {
 		for(var i = 0; i < cloudArray.length; i++) {
 			console.log(cloudArray);		
 			if( typedWord == cloudArray[i].text) {
-				console.log("Reached here", cloudArray[i].text);
 				changeToExplode(cloudArray[i]);
 				(function(div){
 					setTimeout(function() {
@@ -165,22 +189,12 @@ function getKeys(e) {
 	else if(e.keyCode == 8){//for backspace
 		typedWord = typedWord.substring(0, typedWord.length-1);
 		document.getElementById("type").innerHTML = typedWord;
-		console.log("backspace pressed", typedWord);
 	}
 	else{
 		var userInput = String.fromCharCode(e.keyCode || e.charCode);
 		typedWord+= userInput.toLowerCase();
 		document.getElementById("type").innerHTML = typedWord;		
-		console.log("others pressed", typedWord);
 	}
-}
-
-function checkOutOfBounds(value) {
-	if(parseInt(value) < 0 || parseInt(value) >= width){
-		console.log("out of bounds");
-		return true;
-	}
-	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,13 +206,69 @@ function getRandom(max, min){
 }
 
 function changeToExplode(div) {
-	console.log("Change");
-	// div.element.style.border = "none";
-	// div.element.innerHTML = "";
-	div.element.style.backgroundImage = "url('images/blast.gif')";
-	div.element.style.backgroundSize = "contain";
+	div.element.innerHTML = "";
+	div.element.style.backgroundColor = "transparent";
+	div.element.style.border = "none";
+	div.element.style.backgroundImage = "url('images/blast.png')";
+	div.element.style.backgroundRepeat = "no-repeat";
+	div.element.style.backgroundSize = "55px 56px";
+	div.element.style.height = "300px";
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function checkCollisionWithBullet(bullet, x, y) {
+	if(bullet.y == y && bullet.x == x){
+		return true;
+	}
+	return false;
+}
+
+function sendBullet(word) {
+	var div = [];
+	for( var i = 0; i < cloudArray.length; i++) {
+		if(word == cloudArray[i].text) {
+			div = cloudArray[i];
+		}
+	}
+	console.log("Pushed", div);
+	var delx = Math.abs( ( div.x + (div.element.offsetWidth / 2) ) - bullet.x / 2 );
+	var dely = Math.abs( (div.y + (div.element.offsetHeight / 2) ) - bullet.y / 2);
+	var angle = Math.atan2(dely, delx);
+	var distance = Math.sqrt( dely * dely + delx * delx);
+
+	if( div.x == 400) {
+		var bulletInterval = setInterval(function(){
+			bullet.y--;
+			if( checkCollisionWithBullet(bullet, div.x, div.y) ) {
+				clearInterval(bulletInterval);
+			}
+			bullet.redraw();
+		}, bulletSpeed);
+	}
+	else if ( div.x < 400 ){
+		var bulletInterval = setInterval(function(){
+			bullet.y -= Math.cos(angle);
+			bullet.x -= Math.sin(angle);
+			if( checkCollisionWithBullet(bullet, div.x, div.y) ) {
+				clearInterval(bulletInterval);
+			}
+			bullet.redraw();
+		}, bulletSpeed);
+	}
+	else if ( div.x > 400) {
+		var bulletInterval = setInterval(function(){
+			// bullet.y -= Math.cos(angle);
+			bullet.y -= Math.cos(angle);
+			bullet.x += Math.sin(angle) ;
+			if( checkCollisionWithBullet(bullet, div.x, div.y) ) {
+				clearInterval(bulletInterval);
+			}
+			bullet.redraw();
+		}, bulletSpeed);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getCloudDistance(obstacle1, obstacle2) {
 	obstacle1CenterX = obstacle1.element.offsetLeft + obstacle1.element.offsetWidth/2;
 	obstacle1CenterY = obstacle1.element.offsetTop + obstacle1.element.offsetHeight/2;	

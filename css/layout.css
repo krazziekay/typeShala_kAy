@@ -43,6 +43,14 @@ body {
 	vertical-align: middle;
 	z-index: 1;
 }
+.bullet {
+	height: 10px;
+	width: 5px;
+	background-color: yellow;
+	position: absolute;
+	z-index: 1;
+	border: 2px solid white;
+}
 .typing {
 	border: 1px solid grey;
 	padding: 10px;
